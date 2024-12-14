@@ -47,7 +47,8 @@ public class AccountController : ControllerBase
     {
         if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
         {
-            return BadRequest("Username is already taken");
+            ModelState.AddModelError("email", "Email taken");
+            return ValidationProblem();
         }
 
         var user = new AppUser
@@ -56,7 +57,7 @@ public class AccountController : ControllerBase
             Email = registerDto.Email,
             UserName = registerDto.Username
         };
-
+        Console.WriteLine(registerDto.Password);
         var result = await _userManager.CreateAsync(user, registerDto.Password);
 
         if (result.Succeeded)
